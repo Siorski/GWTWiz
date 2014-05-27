@@ -150,5 +150,22 @@ public class GWTWiz implements EntryPoint {
 			}
 		});
 		
+		//oblusga buttonu wyloguj
+		wylogujBTN.addClickHandler(new ClickHandler() {
+			
+			@Override
+			public void onClick(ClickEvent event) {
+				//"czyścimy" textboxy logowania, wyświetlamy/chowamy odpowiednie elementy HTML
+				loginTB.setText("");
+				hasloTB.setText("");
+				DialogBox db = new MyDialog();
+				db.center();
+				db.setText("WYLOGOWANO POPRAWNIE!");
+				db.show();
+				DOM.getElementById("wizytowka").getStyle().setDisplay(Display.BLOCK);
+				DOM.getElementById("logowanieDIV").getStyle().setDisplay(Display.BLOCK);
+				DOM.getElementById("edycja").getStyle().setDisplay(Display.NONE);
+			}
+		});
 	}
 }
