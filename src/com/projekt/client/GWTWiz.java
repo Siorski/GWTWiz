@@ -167,5 +167,29 @@ public class GWTWiz implements EntryPoint {
 				DOM.getElementById("edycja").getStyle().setDisplay(Display.NONE);
 			}
 		});
+		
+		zapiszBTN.addClickHandler(new ClickHandler() {
+
+			@Override
+			public void onClick(ClickEvent event) {
+				imieLBL.setText(imieTB.getText());
+				nazwiskoLBL.setText(nazwiskoTB.getText());
+				emailLBL.setText(emailTB.getText());
+				nazwaFirmyLBL.setText(nazwaFirmyTB.getText());
+				ulicaLBL.setText(ulicaTB.getText());
+				miastoLBL.setText(miastoTB.getText());
+				kodPocztowyLBL.setText(kodPocztowyTB.getText());
+				opisLBL.setText(opisTB.getText());
+				telLBL.setText(telTB.getText());
+				stronaLBL.setText(stronaTB.getText());
+				zdjecie.setUrl(zdjecieTB.getText());
+			
+				DialogBox db = new MyDialog();
+				db.center();
+				db.setText("ZAPISANO!");
+				db.show();	
+			}
+			
+		});
 	}
 }
