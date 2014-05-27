@@ -6,7 +6,15 @@
          xmlns="http://java.sun.com/xml/ns/javaee">
 
   <!-- Servlets -->
+  <servlet>
+    <servlet-name>logowanieServlet</servlet-name>
+    <servlet-class>com.projekt.server.LogowanieServiceImpl</servlet-class>
+  </servlet>
   
+  <servlet-mapping>
+    <servlet-name>logowanieServlet</servlet-name>
+    <url-pattern>/gwtwiz/logowanie</url-pattern>
+  </servlet-mapping>
   <!-- Default page to serve -->
   <welcome-file-list>
     <welcome-file>GWTWiz.html</welcome-file>

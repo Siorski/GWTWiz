@@ -1,9 +1,16 @@
 package com.projekt.client;
 
+import com.projekt.client.LogowanieService;
+import com.projekt.client.LogowanieServiceAsync;
 import com.google.gwt.core.client.EntryPoint;
+import com.google.gwt.core.client.GWT;
 import com.google.gwt.dom.client.Style.Display;
+import com.google.gwt.event.dom.client.ClickEvent;
+import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.user.client.DOM;
+import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.Button;
+import com.google.gwt.user.client.ui.DialogBox;
 import com.google.gwt.user.client.ui.Image;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.PasswordTextBox;
@@ -11,8 +18,26 @@ import com.google.gwt.user.client.ui.RootPanel;
 import com.google.gwt.user.client.ui.TextBox;
 
 public class GWTWiz implements EntryPoint {
+	//RPC Async Service
+	LogowanieServiceAsync logowanieService = GWT.create(LogowanieService.class);
+	
+	//http://www.gwtapps.com/doc/html/com.google.gwt.user.client.ui.DialogBox.html
+	//tworzenie wyskakującego okienka
+	private static class MyDialog extends DialogBox {
+	    public MyDialog() {
+	    	Button okBTN = new Button("OK");
+	    	okBTN.setWidth("100%");
+	    	okBTN.addClickHandler(new ClickHandler() {
+	    		public void onClick(ClickEvent event) {
+	    			MyDialog.this.hide();
+	    		}
+	    	});
+	      setWidget(okBTN);
+	    }
+	}
 	
 	public void onModuleLoad() {
+				
 		//ukrywamy formularz edycji wizytówki
 		DOM.getElementById("edycja").getStyle().setDisplay(Display.NONE);
 		
@@ -88,5 +113,42 @@ public class GWTWiz implements EntryPoint {
 		RootPanel.get("telTB").add(telTB);
 		RootPanel.get("stronaTB").add(stronaTB);
 		RootPanel.get("zdjecieTB").add(zdjecieTB);
+		
+		//obsluga buttonu zaloguj
+		zalogujBTN.addClickHandler(new ClickHandler() {
+			
+			@Override
+			public void onClick(ClickEvent event) {
+				//pobieramy stringi z textboxów
+				final String login = loginTB.getText();
+				final String haslo = hasloTB.getText();
+				
+				//za pomocą stworzonego interfejsu logowania sprawdzamy czy dane się zgadzają
+				logowanieService.sprawdzLogin(login, haslo, new AsyncCallback<Boolean>(){
+
+					@Override
+					public void onFailure(Throwable caught) {
+						//obsługa błędu				
+					}
+
+					@Override
+					public void onSuccess(Boolean result) {
+						if (result == true){
+							//todo pobieranie danych z lbl do tb
+							DOM.getElementById("logowanieDIV").getStyle().setDisplay(Display.NONE);
+							DOM.getElementById("wizytowka").getStyle().setDisplay(Display.NONE);
+							DOM.getElementById("edycja").getStyle().setDisplay(Display.BLOCK);
+						}
+						else {
+							DialogBox db = new MyDialog();
+							db.center();
+							db.setText("ZŁY LOGIN LUB HASŁO!");
+							db.show();
+						}
+					}
+				});
+			}
+		});
+		
 	}
 }
