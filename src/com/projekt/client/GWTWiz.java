@@ -134,7 +134,18 @@ public class GWTWiz implements EntryPoint {
 					@Override
 					public void onSuccess(Boolean result) {
 						if (result == true){
-							//todo pobieranie danych z lbl do tb
+							imieTB.setText(imieLBL.getText());
+							nazwiskoTB.setText(nazwiskoLBL.getText());
+							emailTB.setText(emailLBL.getText());
+							nazwaFirmyTB.setText(nazwaFirmyLBL.getText());
+							ulicaTB.setText(ulicaLBL.getText());
+							miastoTB.setText(miastoLBL.getText());
+							kodPocztowyTB.setText(kodPocztowyLBL.getText());
+							opisTB.setText(opisLBL.getText());
+							telTB.setText(telLBL.getText());
+							stronaTB.setText(stronaLBL.getText());
+							zdjecieTB.setText(zdjecie.getUrl());
+							
 							DOM.getElementById("logowanieDIV").getStyle().setDisplay(Display.NONE);
 							DOM.getElementById("wizytowka").getStyle().setDisplay(Display.NONE);
 							DOM.getElementById("edycja").getStyle().setDisplay(Display.BLOCK);
@@ -150,7 +161,7 @@ public class GWTWiz implements EntryPoint {
 			}
 		});
 		
-		//oblusga buttonu wyloguj
+		//obsługa buttonu wyloguj
 		wylogujBTN.addClickHandler(new ClickHandler() {
 			
 			@Override
@@ -189,7 +200,6 @@ public class GWTWiz implements EntryPoint {
 				db.setText("ZAPISANO!");
 				db.show();	
 			}
-			
 		});
 	}
 }
