@@ -1,0 +1,2 @@
+serviceClass: com.projekt.client.DaneService
+path: D6E0A175C76DC21BCBDCECB7E499F1E1.gwt.rpc

@@ -2,6 +2,7 @@ package com.projekt.client;
 
 import com.projekt.client.LogowanieService;
 import com.projekt.client.LogowanieServiceAsync;
+import com.projekt.shared.models.Dane;
 import com.google.gwt.core.client.EntryPoint;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.dom.client.Style.Display;
@@ -20,6 +21,7 @@ import com.google.gwt.user.client.ui.TextBox;
 public class GWTWiz implements EntryPoint {
 	//RPC Async Service
 	LogowanieServiceAsync logowanieService = GWT.create(LogowanieService.class);
+	DaneServiceAsync daneService = GWT.create(DaneService.class);
 	
 	//http://www.gwtapps.com/doc/html/com.google.gwt.user.client.ui.DialogBox.html
 	//tworzenie wyskakującego okienka
@@ -50,20 +52,19 @@ public class GWTWiz implements EntryPoint {
 		RootPanel.get("zalogujBTN").add(zalogujBTN);
 		RootPanel.get("wylogujBTN").add(wylogujBTN);
 		RootPanel.get("zapiszBTN").add(zapiszBTN);
-		
+	
 		//tworzymy labele, w których wyświetlane będa dane na wizytówce
-		final Label imieLBL = new Label("Kacper");
-		final Label nazwiskoLBL = new Label("Siora");
-		final Label emailLBL = new Label("adres@wp.pl");
-		final Label nazwaFirmyLBL = new Label("FC MiSieNieChce");
-		final Label ulicaLBL = new Label("ul. Ulica");
-		final Label miastoLBL = new Label("Gdzieś");
-		final Label kodPocztowyLBL = new Label("88-888");
-		final Label opisLBL = new Label("zawód piłkarz");
-		final Label telLBL = new Label("123-456-789");
-		final Label stronaLBL = new Label("www.cos.pl");
+		final Label imieLBL = new Label();
+		final Label nazwiskoLBL = new Label();
+		final Label emailLBL = new Label();
+		final Label nazwaFirmyLBL = new Label();
+		final Label ulicaLBL = new Label();
+		final Label miastoLBL = new Label();
+		final Label kodPocztowyLBL = new Label();
+		final Label opisLBL = new Label();
+		final Label telLBL = new Label();
+		final Label stronaLBL = new Label();
 		final Image zdjecie = new Image();
-		zdjecie.setUrl("http://img1.wikia.nocookie.net/__cb20081103220142/witcher/images/9/9a/People_Professor_wanted.png");
 		
 		//dodajemy labele do strony
 		RootPanel.get("imieLBL").add(imieLBL);
@@ -78,6 +79,30 @@ public class GWTWiz implements EntryPoint {
 		RootPanel.get("stronaLBL").add(stronaLBL);
 		RootPanel.get("zdjecieDIV").add(zdjecie);		
 		
+		//pobieramy początkowe dane
+		daneService.getDane(new AsyncCallback<Dane>() {
+			
+			@Override
+			public void onFailure(Throwable caught) {
+				//obsługa błedu
+			}
+			
+			@Override
+			public void onSuccess(Dane result) {
+				imieLBL.setText(result.getImie());
+				nazwiskoLBL.setText(result.getNazwisko());
+				emailLBL.setText(result.getEmail());
+				nazwaFirmyLBL.setText(result.getNazwaFirmy());
+				ulicaLBL.setText(result.getUlica());
+				miastoLBL.setText(result.getMiasto());
+				kodPocztowyLBL.setText(result.getKodPocztowy());
+				opisLBL.setText(result.getOpis());
+				telLBL.setText(result.getTel());
+				stronaLBL.setText(result.getStrona());
+				zdjecie.setUrl(result.getZdjecie());
+			}
+		});	
+
 		//tworzymy textboxy do logowania
 		final TextBox loginTB = new TextBox();
 		final PasswordTextBox hasloTB = new PasswordTextBox();
@@ -145,7 +170,6 @@ public class GWTWiz implements EntryPoint {
 							telTB.setText(telLBL.getText());
 							stronaTB.setText(stronaLBL.getText());
 							zdjecieTB.setText(zdjecie.getUrl());
-							
 							DOM.getElementById("logowanieDIV").getStyle().setDisplay(Display.NONE);
 							DOM.getElementById("wizytowka").getStyle().setDisplay(Display.NONE);
 							DOM.getElementById("edycja").getStyle().setDisplay(Display.BLOCK);
@@ -183,22 +207,54 @@ public class GWTWiz implements EntryPoint {
 
 			@Override
 			public void onClick(ClickEvent event) {
-				imieLBL.setText(imieTB.getText());
-				nazwiskoLBL.setText(nazwiskoTB.getText());
-				emailLBL.setText(emailTB.getText());
-				nazwaFirmyLBL.setText(nazwaFirmyTB.getText());
-				ulicaLBL.setText(ulicaTB.getText());
-				miastoLBL.setText(miastoTB.getText());
-				kodPocztowyLBL.setText(kodPocztowyTB.getText());
-				opisLBL.setText(opisTB.getText());
-				telLBL.setText(telTB.getText());
-				stronaLBL.setText(stronaTB.getText());
-				zdjecie.setUrl(zdjecieTB.getText());
-			
-				DialogBox db = new MyDialog();
-				db.center();
-				db.setText("ZAPISANO!");
-				db.show();	
+				
+				//pobieramy dane z TB, które mają być zapisane
+				final String imie = imieTB.getText();
+				final String nazwisko = nazwiskoTB.getText();
+				final String email = emailTB.getText();
+				final String nazwaFirmy = nazwaFirmyTB.getText();
+				final String ulica = ulicaTB.getText();
+				final String miasto = miastoTB.getText();
+				final String kodPocztowy = kodPocztowyTB.getText();
+				final String opis = opisTB.getText();
+				final String tel = telTB.getText();
+				final String strona = stronaTB.getText();
+				final String zdjecieUrl = zdjecieTB.getText();
+				
+				//tworzymy nowy obiekt z pobranymi danymi
+				Dane daneDoZapisania = new Dane(imie, nazwisko, 
+						email, nazwaFirmy, ulica, miasto, 
+						kodPocztowy, opis, tel, strona, zdjecieUrl);
+
+				//zapisujemy nowe dane
+				daneService.setDane(daneDoZapisania, new AsyncCallback<Void>(){
+
+					@Override
+					public void onFailure(Throwable caught) {
+						//obsługa błędu
+					}
+
+					@Override
+					public void onSuccess(Void result) {
+						//wstawiamy wcześniej pobrane dane do LBL
+						imieLBL.setText(imie);
+						nazwiskoLBL.setText(nazwisko);
+						emailLBL.setText(email);
+						nazwaFirmyLBL.setText(nazwaFirmy);
+						ulicaLBL.setText(ulica);
+						miastoLBL.setText(miasto);
+						kodPocztowyLBL.setText(kodPocztowy);
+						opisLBL.setText(opis);
+						telLBL.setText(tel);
+						stronaLBL.setText(strona);
+						zdjecie.setUrl(zdjecieUrl);
+
+						DialogBox db = new MyDialog();
+						db.center();
+						db.setText("ZAPISANO!");
+						db.show();	
+					}
+				});	
 			}
 		});
 	}

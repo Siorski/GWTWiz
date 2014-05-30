@@ -15,6 +15,16 @@
     <servlet-name>logowanieServlet</servlet-name>
     <url-pattern>/gwtwiz/logowanie</url-pattern>
   </servlet-mapping>
+  
+  <servlet>
+    <servlet-name>daneServlet</servlet-name>
+    <servlet-class>com.projekt.server.DaneServiceImpl</servlet-class>
+  </servlet>
+  
+  <servlet-mapping>
+    <servlet-name>daneServlet</servlet-name>
+    <url-pattern>/gwtwiz/dane</url-pattern>
+  </servlet-mapping>
   <!-- Default page to serve -->
   <welcome-file-list>
     <welcome-file>GWTWiz.html</welcome-file>
